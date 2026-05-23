@@ -1,0 +1,42 @@
+@model EcoManageWeb.Models.EntradaCarga
+@{
+    ViewData["Title"] = "Pesagem Final";
+}
+
+<h2>Finalizar Pesagem (Saída)</h2>
+<div class="card shadow-sm border-success" style="max-width: 600px;">
+    <div class="card-body">
+        <h5 class="card-title text-success">Caminhão: @Model.Veiculo.Placa</h5>
+        <h6 class="card-subtitle mb-3 text-muted">Transportadora: @Model.Veiculo.Transportadora.Nome</h6>
+        <hr>
+        <p><strong>Cliente:</strong> @Model.Contrato.Cliente.RazaoSocial</p>
+        <p><strong>Resíduo:</strong> @Model.Contrato.Residuo.Nome</p>
+        <p class="mb-3"><strong>Peso de Entrada (kg):</strong> <span id="pesoEntrada">@Model.PesoEntrada.ToString("F2")</span></p>
+
+        <form method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Peso Marcado na Balança (Saída) (kg)</label>
+                <input type="number" step="0.01" name="pesoSaida" id="pesoSaida" class="form-control form-control-lg text-primary fw-bold" placeholder="0.00" oninput="calcularLiquido()" required>
+            </div>
+
+            <div class="mb-4 p-3 bg-light rounded text-center">
+                <h4 class="text-success m-0">Peso Líquido Calculado: <span id="pesoLiquido">0.00</span> kg</h4>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg w-100"><i class="fa-solid fa-file-signature"></i> Finalizar e Gerar MTR Digital</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function calcularLiquido() {
+            let entrada = parseFloat(document.getElementById('pesoEntrada').innerText.replace(',','.')) || 0;
+            let saida = parseFloat(document.getElementById('pesoSaida').value) || 0;
+            let liquido = Math.abs(entrada - saida);
+            document.getElementById('pesoLiquido').innerText = liquido.toFixed(2);
+        }
+    </script>
+}

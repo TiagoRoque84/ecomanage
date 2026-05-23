@@ -1,0 +1,48 @@
+@model EcoManageWeb.Models.ConfiguracaoAterro
+@{
+    ViewData["Title"] = "Configurações do Aterro";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Configurações do Aterro</h2>
+</div>
+
+<div class="card shadow-sm border-0" style="max-width: 600px;">
+    <div class="card-body">
+        <form asp-action="Salvar" method="post">
+            <div class="mb-3">
+                <label class="form-label text-muted fw-bold small">Capacidade Máxima Diária (kg)</label>
+                <input type="text" name="capacidadeDiariaKg" id="CapacidadeDiariaToneladas" class="form-control form-control-lg text-primary fw-bold" value="@Model.CapacidadeDiariaKg.ToString("0.00").Replace(".", ",")" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-muted fw-bold small">Capacidade Máxima Mensal (kg)</label>
+                <input type="text" name="capacidadeMensalKg" id="CapacidadeMensalToneladas" class="form-control form-control-lg text-success fw-bold" value="@Model.CapacidadeMensalKg.ToString("0.00").Replace(".", ",")" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100"><i class="fa-solid fa-save"></i> Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('CapacidadeDiariaToneladas').addEventListener('input', function() {
+            var diaria = parseFloat(this.value.replace(',', '.'));
+            if (!isNaN(diaria)) {
+                var mensal = diaria * 30;
+                document.getElementById('CapacidadeMensalToneladas').value = mensal.toFixed(2).toString().replace('.', ',');
+            } else {
+                document.getElementById('CapacidadeMensalToneladas').value = '';
+            }
+        });
+
+        document.getElementById('CapacidadeMensalToneladas').addEventListener('input', function() {
+            var mensal = parseFloat(this.value.replace(',', '.'));
+            if (!isNaN(mensal)) {
+                var diaria = mensal / 30;
+                document.getElementById('CapacidadeDiariaToneladas').value = diaria.toFixed(2).toString().replace('.', ',');
+            } else {
+                document.getElementById('CapacidadeDiariaToneladas').value = '';
+            }
+        });
+    </script>
+}

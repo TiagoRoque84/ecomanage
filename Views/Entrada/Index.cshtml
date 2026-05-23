@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Balança - Entradas";
+    var noPatio = ViewBag.NoPatio as IEnumerable<EcoManageWeb.Models.EntradaCarga>;
+    var finalizadas = ViewBag.Finalizadas as IEnumerable<EcoManageWeb.Models.EntradaCarga>;
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Balança Rodoviária</h2>
+    <a asp-action="PesagemInicial" class="btn btn-primary"><i class="fa-solid fa-truck"></i> Nova Pesagem Inicial</a>
+</div>
+
+<h4>Caminhões no Pátio (Aguardando Saída)</h4>
+<table class="table table-warning table-hover mb-5">
+    <thead>
+        <tr>
+            <th>Entrada</th><th>Placa</th><th>Cliente</th><th>Resíduo</th><th>Peso Inicial (kg)</th><th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(noPatio != null && noPatio.Any()) {
+            foreach(var p in noPatio) {
+                <tr>
+                    <td>@p.DataEntrada.ToString("HH:mm")</td>
+                    <td class="fw-bold">@p.Veiculo.Placa</td>
+                    <td>@p.Contrato.Cliente.RazaoSocial</td>
+                    <td>@p.Contrato.Residuo.Nome</td>
+                    <td>@p.PesoEntrada.ToString("N2")</td>
+                    <td>
+                        <a asp-action="PesagemFinal" asp-route-id="@p.Id" class="btn btn-sm btn-primary">Registrar Saída</a>
+                        <a asp-action="Editar" asp-route-id="@p.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalCancelar(@p.Id)"><i class="fa-solid fa-xmark"></i></button>
+                    </td>
+                </tr>
+            }
+        } else {
+            <tr><td colspan="6" class="text-center">Nenhum caminhão no pátio.</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>Últimas Pesagens Finalizadas</h4>
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Saída</th><th>Placa</th><th>Cliente</th><th>P. Inicial</th><th>P. Final</th><th>P. Líquido</th><th>MTR</th><th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(finalizadas != null && finalizadas.Any()) {
+            foreach(var f in finalizadas) {
+                <tr>
+                    <td>@f.DataSaida?.ToString("HH:mm")</td>
+                    <td class="fw-bold">@f.Veiculo.Placa</td>
+                    <td>@f.Contrato.Cliente.RazaoSocial</td>
+                    <td>@f.PesoEntrada.ToString("N2")</td>
+                    <td>@f.PesoSaida.ToString("N2")</td>
+                    <td class="text-success fw-bold">@f.PesoLiquidoKg.ToString("N2")</td>
+                    <td>
+                    <td>
+                        @if (f.Status == "Cancelada") {
+                            <span class="badge bg-danger">Cancelada</span>
+                        } else if (f.Mtr != null) {
+                            <a href="/Mtr/Pdf/@f.Mtr.Id" target="_blank" class="btn btn-sm btn-danger"><i class="fa-solid fa-file-pdf"></i> PDF</a>
+                        }
+                    </td>
+                    <td>
+                        @if (f.Status != "Cancelada") {
+                            <a asp-action="Editar" asp-route-id="@f.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="abrirModalCancelar(@f.Id)"><i class="fa-solid fa-xmark"></i></button>
+                        }
+                    </td>
+                </tr>
+            }
+        } else {
+            <tr><td colspan="8" class="text-center">Nenhuma finalizada.</td></tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal de Cancelamento -->
+<div class="modal fade" id="modalCancelar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Cancelar" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancelar Pesagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="cancelId" value="" />
+                    <div class="alert alert-warning">
+                        <strong>Atenção:</strong> O cancelamento não excluirá o registro, mas invalidará os volumes.
+                    </div>
+                    <div class="mb-3">
+                        <label>Justificativa do Cancelamento</label>
+                        <textarea name="motivoCancelamento" class="form-control" rows="3" required placeholder="Ex: Placa informada errada, desistência..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar Cancelamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalCancelar(id) {
+        document.getElementById('cancelId').value = id;
+        new bootstrap.Modal(document.getElementById('modalCancelar')).show();
+    }
+</script>

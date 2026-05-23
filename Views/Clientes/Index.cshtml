@@ -1,0 +1,97 @@
+@model IEnumerable<EcoManageWeb.Models.Cliente>
+@{
+    ViewData["Title"] = "Clientes e Geradores";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Clientes e Geradores</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#novoModal">Novo Cliente</button>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Razão Social / Nome</th>
+                    <th>CPF / CNPJ</th>
+                    <th>Município</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.Id</td>
+                        <td>@c.RazaoSocial</td>
+                        <td class="cpfcnpj">@c.CpfCnpj</td>
+                        <td>@c.Municipio</td>
+                        <td>
+                            <a asp-action="Editar" asp-route-id="@c.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                            <form asp-action="Delete" asp-route-id="@c.Id" method="post" style="display:inline;" onsubmit="return confirm('Excluir este cliente?');">
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="novoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Cliente / Gerador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Razão Social / Nome</label>
+                        <input type="text" name="razao" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>CPF / CNPJ</label>
+                        <input type="text" name="cpfCnpj" class="form-control cpfcnpj" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Município</label>
+                        <input type="text" name="municipio" class="form-control" required>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Valor por Tonelada (R$)</label>
+                            <input type="text" name="valorTonelada" class="form-control" placeholder="Ex: 100,00">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Valor do Frete (R$)</label>
+                            <input type="text" name="valorFrete" class="form-control" placeholder="Ex: 50,00">
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="text-muted small">Opcional: Vincule um resíduo agora para criar o Contrato automaticamente.</p>
+                    <div class="mb-3">
+                        <label>Resíduo Autorizado (Contrato)</label>
+                        <select name="residuoId" class="form-select">
+                            <option value="">Não vincular agora...</option>
+                            @if(ViewBag.Residuos != null) {
+                                foreach(var res in ViewBag.Residuos) {
+                                    <option value="@res.Id">@res.Nome (@res.Classe)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

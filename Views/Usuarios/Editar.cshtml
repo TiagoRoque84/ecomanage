@@ -1,0 +1,41 @@
+@model EcoManageWeb.Models.Usuario
+@{
+    ViewData["Title"] = "Editar Usuário";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Editar Usuário</h2>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="mb-3">
+                <label>Nome Completo</label>
+                <input type="text" name="nome" class="form-control" value="@Model.Nome" required />
+            </div>
+            <div class="mb-3">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control" value="@Model.Email" required />
+            </div>
+            <div class="mb-3">
+                <label>Nova Senha (deixe em branco para não alterar)</label>
+                <input type="password" name="senha" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Perfil</label>
+                <select name="perfil" class="form-select">
+                    <option value="Balanceiro" selected="@(Model.Perfil == "Balanceiro")">Balanceiro</option>
+                    <option value="Administrador" selected="@(Model.Perfil == "Administrador")">Administrador</option>
+                </select>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="ativo" value="true" checked="@Model.Ativo" id="ativoCheck" />
+                <label class="form-check-label" for="ativoCheck">Ativo</label>
+            </div>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+    </div>
+</div>

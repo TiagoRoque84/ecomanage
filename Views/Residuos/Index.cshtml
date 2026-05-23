@@ -1,0 +1,38 @@
+@model IEnumerable<EcoManageWeb.Models.Residuo>
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Resíduos</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newModal">Novo Resíduo</button>
+</div>
+
+<table class="table table-striped">
+    <thead><tr><th>Nome / Descrição</th><th>Classe (CETESB)</th><th>Ações</th></tr></thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@item.Nome</td><td>@item.Classe</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Excluir este resíduo?');">
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="newModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" asp-action="Create">
+        <div class="modal-header"><h5 class="modal-title">Novo Resíduo</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <input type="text" name="nome" class="form-control mb-2" placeholder="Nome do Resíduo" required />
+            <input type="text" name="classe" class="form-control mb-2" placeholder="Classe (Ex: IIA)" required />
+        </div>
+        <div class="modal-footer"><button type="submit" class="btn btn-primary">Salvar</button></div>
+      </form>
+    </div>
+  </div>
+</div>

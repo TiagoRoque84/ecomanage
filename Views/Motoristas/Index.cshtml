@@ -1,0 +1,73 @@
+@model IEnumerable<EcoManageWeb.Models.Motorista>
+@{
+    ViewData["Title"] = "Motoristas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Motoristas</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#novoModal">Novo Motorista</button>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>CNH</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.Id</td>
+                        <td>@c.Nome</td>
+                        <td class="cpfcnpj">@c.Cpf</td>
+                        <td>@c.Cnh</td>
+                        <td>
+                            <a asp-action="Editar" asp-route-id="@c.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                            <form asp-action="Delete" asp-route-id="@c.Id" method="post" style="display:inline;" onsubmit="return confirm('Excluir este motorista?');">
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="novoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Motorista</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Nome Completo</label>
+                        <input type="text" name="nome" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>CPF</label>
+                        <input type="text" name="cpf" class="form-control cpfcnpj" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>CNH</label>
+                        <input type="text" name="cnh" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

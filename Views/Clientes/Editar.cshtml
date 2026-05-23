@@ -1,0 +1,44 @@
+@model EcoManageWeb.Models.Cliente
+@{
+    ViewData["Title"] = "Editar Cliente / Gerador";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Editar Cliente</h2>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="mb-3">
+                <label>Razão Social / Nome</label>
+                <input type="text" name="razao" class="form-control" value="@Model.RazaoSocial" required />
+            </div>
+            <div class="mb-3">
+                <label>CPF / CNPJ</label>
+                <input type="text" name="cpfCnpj" class="form-control cpfcnpj" value="@Model.CpfCnpj" required />
+            </div>
+            <div class="mb-3">
+                <label>Município</label>
+                <input type="text" name="municipio" class="form-control" value="@Model.Municipio" required />
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Valor por Tonelada (R$)</label>
+                    <input type="text" name="valorTonelada" class="form-control" value="@Model.ValorTonelada.ToString("0.00").Replace(".", ",")" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Valor do Frete p/ Viagem (R$)</label>
+                    <input type="text" name="valorFrete" class="form-control" value="@Model.ValorFrete.ToString("0.00").Replace(".", ",")" />
+                </div>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" name="ativo" value="true" checked="@Model.Ativo" id="ativoCheck" />
+                <label class="form-check-label" for="ativoCheck">Ativo</label>
+            </div>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+    </div>
+</div>

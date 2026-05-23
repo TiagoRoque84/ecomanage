@@ -1,0 +1,115 @@
+@model IEnumerable<EcoManageWeb.Models.EntradaCarga>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard Operacional</h1>
+</div>
+
+<div class="row mb-4" id="kpi-cards">
+    <div class="col-md">
+        <div class="card text-white bg-success mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">Vol. Hoje</h6>
+                <h3 class="card-text" id="kpi-volume">...</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card text-white bg-primary mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">Entradas</h6>
+                <h3 class="card-text" id="kpi-entradas">...</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card text-white bg-warning mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">MTRs Pend.</h6>
+                <h3 class="card-text" id="kpi-mtrs">...</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card text-white bg-danger mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">Uso Aterro (Dia)</h6>
+                <h3 class="card-text" id="kpi-capacidade">...</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card text-white bg-info mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">Uso Aterro (Mês)</h6>
+                <h3 class="card-text" id="kpi-capacidade-mes">...</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card text-white bg-dark mb-3 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold" title="Análise Preditiva Simples (Projeção Média)">Previsão Mês</h6>
+                <h3 class="card-text" id="kpi-previsao">...</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Últimas Entradas</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Resíduo</th>
+                <th>Peso Líquido</th>
+                <th>MTR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.DataEntrada.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.Contrato.Cliente.RazaoSocial</td>
+                    <td>@item.Contrato.Residuo.Nome</td>
+                    <td>@item.PesoLiquidoKg.ToString("N2") kg</td>
+                    <td>
+                        @if (item.Mtr != null)
+                        {
+                            <span class="badge bg-secondary">@item.Mtr.NumeroMtr</span>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr><td colspan="5" class="text-center">Nenhuma entrada registrada.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function fetchIndicadores() {
+            fetch('/api/indicadores')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('kpi-volume').innerText = data.volume_hoje_t + ' t';
+                    document.getElementById('kpi-entradas').innerText = data.entradas_hoje;
+                    document.getElementById('kpi-mtrs').innerText = data.mtrs_pendentes;
+                    document.getElementById('kpi-capacidade').innerText = data.capacidade_pct + '%';
+                    document.getElementById('kpi-capacidade-mes').innerText = data.capacidade_mes_pct + '%';
+                    document.getElementById('kpi-previsao').innerText = data.previsao_mes_t + ' t';
+                })
+                .catch(err => console.error(err));
+        }
+        
+        fetchIndicadores();
+    </script>
+}

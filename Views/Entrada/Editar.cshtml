@@ -1,0 +1,39 @@
+@model EcoManageWeb.Models.EntradaCarga
+@{
+    ViewData["Title"] = "Editar Pesagem";
+}
+
+<h2>Editar Pesagem #@Model.Id</h2>
+<div class="card shadow-sm" style="max-width: 600px;">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Contrato?.Cliente?.RazaoSocial</h5>
+        <h6 class="card-subtitle text-muted mb-3">Veículo: @Model.Veiculo?.Placa</h6>
+        
+        <form asp-action="Editar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="mb-3">
+                <label class="form-label">Peso de Entrada (kg)</label>
+                <input type="number" step="0.01" name="pesoEntrada" class="form-control" value="@Model.PesoEntrada.ToString("0.00").Replace(",",".")" required>
+            </div>
+            
+            @if(Model.Status == "Finalizada" || Model.PesoSaida > 0)
+            {
+                <div class="mb-3">
+                <label>Peso de Saída / Tara (kg)</label>
+                <input type="text" name="pesoSaida" class="form-control text-primary" value="@(Model.PesoSaida > 0 ? Model.PesoSaida.ToString("0.00").Replace(".",",") : "")" />
+            </div>
+
+            <div class="mb-4 form-check bg-light p-3 rounded border">
+                <input type="checkbox" class="form-check-input ms-1" id="cobrarFrete" name="cobrarFrete" value="true" checked="@Model.CobrarFrete">
+                <label class="form-check-label fw-bold text-primary ms-2" for="cobrarFrete">Transporte da ECOMANAGE (Cobrar Frete nesta viagem)</label>
+            </div>
+            }
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+        </form>
+    </div>
+</div>

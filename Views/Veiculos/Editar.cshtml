@@ -1,0 +1,38 @@
+@model EcoManageWeb.Models.Veiculo
+@{
+    ViewData["Title"] = "Editar Veículo";
+    var transportadoras = ViewBag.Transportadoras as IEnumerable<EcoManageWeb.Models.Transportadora>;
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Editar Veículo</h2>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="mb-3">
+                <label>Placa</label>
+                <input type="text" name="placa" class="form-control" value="@Model.Placa" required />
+            </div>
+            <div class="mb-3">
+                <label>Tara Padrão (kg)</label>
+                <input type="number" step="0.01" name="tara" class="form-control" value="@Model.TaraPadraoKg.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" required />
+            </div>
+            <div class="mb-3">
+                <label>Transportadora</label>
+                <select name="transportadoraId" class="form-select" required>
+                    <option value="">Selecione...</option>
+                    @if(transportadoras != null) {
+                        foreach(var t in transportadoras) {
+                            <option value="@t.Id" selected="@(Model.TransportadoraId == t.Id)">@t.Nome</option>
+                        }
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+    </div>
+</div>

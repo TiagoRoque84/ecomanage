@@ -1,0 +1,30 @@
+@model EcoManageWeb.Models.Motorista
+@{
+    ViewData["Title"] = "Editar Motorista";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Editar Motorista</h2>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <form asp-action="Editar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div class="mb-3">
+                <label>Nome Completo</label>
+                <input type="text" name="nome" class="form-control" value="@Model.Nome" required />
+            </div>
+            <div class="mb-3">
+                <label>CPF</label>
+                <input type="text" name="cpf" class="form-control cpfcnpj" value="@Model.Cpf" required />
+            </div>
+            <div class="mb-3">
+                <label>CNH</label>
+                <input type="text" name="cnh" class="form-control" value="@Model.Cnh" required />
+            </div>
+            <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </form>
+    </div>
+</div>

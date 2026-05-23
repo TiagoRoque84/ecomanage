@@ -1,0 +1,51 @@
+@model IEnumerable<EcoManageWeb.Models.Veiculo>
+@{
+    var transportadoras = ViewBag.Transportadoras as IEnumerable<EcoManageWeb.Models.Transportadora>;
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Veículos Cadastrados</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#newModal">Novo Veículo</button>
+</div>
+
+<table class="table table-striped">
+    <thead><tr><th>Placa</th><th>Tara Padrão (kg)</th><th>Transportadora</th><th>Ações</th></tr></thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>@item.Placa</td>
+                <td>@item.TaraPadraoKg.ToString("N2")</td>
+                <td>@item.Transportadora.Nome</td>
+                <td>
+                            <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen"></i></a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="return confirm('Excluir este veículo?');">
+                        <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="newModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="post" asp-action="Create">
+        <div class="modal-header"><h5 class="modal-title">Novo Veículo</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+            <input type="text" name="placa" class="form-control mb-2" placeholder="Placa (Ex: ABC-1234)" required />
+            <input type="number" step="0.01" name="tara" class="form-control mb-2" placeholder="Tara Padrão em Kg (Ex: 15000)" required />
+            <select name="transportadoraId" class="form-select mb-2" required>
+                <option value="">Selecione a Transportadora...</option>
+                @if(transportadoras != null) {
+                    foreach(var t in transportadoras) {
+                        <option value="@t.Id">@t.Nome</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="modal-footer"><button type="submit" class="btn btn-primary">Salvar</button></div>
+      </form>
+    </div>
+  </div>
+</div>

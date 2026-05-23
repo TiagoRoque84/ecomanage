@@ -1,0 +1,95 @@
+@model IEnumerable<EcoManageWeb.Models.FechamentoFatura>
+@{
+    ViewData["Title"] = "Relatório Financeiro";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Relatório Financeiro</h2>
+</div>
+
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body">
+        <form asp-action="Financeiro" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label text-muted small">Data Lançamento (De)</label>
+                <input type="date" name="dataInicial" class="form-control" value="@ViewBag.DataInicial" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-muted small">Data Lançamento (Até)</label>
+                <input type="date" name="dataFinal" class="form-control" value="@ViewBag.DataFinal" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary me-2"><i class="fa-solid fa-filter"></i> Filtrar Período</button>
+                <a asp-action="Financeiro" class="btn btn-outline-secondary">Limpar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-white bg-warning shadow-sm border-0">
+            <div class="card-body text-dark">
+                <h6 class="card-title fw-bold">A Receber (Em Aberto)</h6>
+                <h3 class="card-text">R$ @ViewBag.Aberto?.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-white bg-success shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title fw-bold">Recebido (Pago)</h6>
+                <h3 class="card-text">R$ @ViewBag.Recebido?.ToString("N2")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Nº Fatura</th>
+                        <th>Cliente</th>
+                        <th>Data Lançamento</th>
+                        <th>Status</th>
+                        <th>Valor Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model) {
+                        <tr>
+                            <td class="ps-3 fw-bold">#@item.Id.ToString("D4")</td>
+                            <td>@item.Cliente.RazaoSocial</td>
+                            <td>@item.DataLancamento.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (item.Status == "Aberto")
+                                {
+                                    <span class="badge bg-warning text-dark">Aberto</span>
+                                }
+                                else if (item.Status == "Pago")
+                                {
+                                    <span class="badge bg-success">Pago</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.Status</span>
+                                }
+                            </td>
+                            <td class="fw-bold @(item.Status == "Pago" ? "text-success" : "text-dark")">
+                                R$ @item.ValorTotal.ToString("N2")
+                            </td>
+                        </tr>
+                    }
+                    @if(!Model.Any()) {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">Nenhuma fatura encontrada neste período.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+@model EcoManageWeb.Models.EntradaCarga
+@{
+    ViewData["Title"] = "Nova Pesagem de Entrada";
+}
+
+<style>
+    .pesagem-header {
+        background-color: #0d6efd;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .pesagem-card {
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        background-color: #fff;
+    }
+    .peso-box {
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .peso-input {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #0d6efd;
+        text-align: right;
+    }
+</style>
+
+<div class="container mt-3">
+    <div class="pesagem-header">
+        <i class="fa-solid fa-truck-front fa-lg"></i>
+        <h4 class="mb-0">Nova Pesagem de Entrada</h4>
+    </div>
+    <div class="pesagem-card p-4">
+        <form asp-action="PesagemInicial" method="post">
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Placa do Veículo</label>
+                    <select name="veiculoId" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        @foreach(var v in ViewBag.Veiculos) {
+                            <option value="@v.Id">@v.Placa - @v.Transportadora.Nome</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Motorista</label>
+                    <select name="motoristaId" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        @foreach(var m in ViewBag.Motoristas) {
+                            <option value="@m.Id">@m.Nome (@m.Cpf)</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Cliente</label>
+                    <select name="clienteId" class="form-select" required>
+                        <option value="">Selecione o Cliente...</option>
+                        @foreach(var c in ViewBag.Clientes) {
+                            <option value="@c.Id">@c.RazaoSocial (@c.CpfCnpj)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="peso-box mb-4 mt-4">
+                <div class="flex-grow-1">
+                    <label class="form-label fw-bold text-primary mb-1">PESO ENTRADA (kg)</label>
+                    <input type="number" step="0.01" name="pesoEntrada" class="form-control peso-input" placeholder="0.00" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label>Observações</label>
+                <textarea name="observacoes" class="form-control" rows="2"></textarea>
+            </div>
+            
+            <div class="mb-4 form-check bg-light p-3 rounded border">
+                <input type="checkbox" class="form-check-input ms-1" id="cobrarFrete" name="cobrarFrete" value="true">
+                <label class="form-check-label fw-bold text-primary ms-2" for="cobrarFrete">Transporte da ECOMANAGE (Cobrar Frete nesta viagem)</label>
+                <div class="small text-muted ms-2 mt-1">Marque esta opção se o transporte foi realizado pela nossa frota. Se foi transporte próprio do cliente, deixe desmarcado.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2"><i class="fa-solid fa-scale-balanced"></i> Registrar Pesagem Inicial</button>
+        </form>
+    </div>
+</div>

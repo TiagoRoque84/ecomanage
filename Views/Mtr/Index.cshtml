@@ -1,0 +1,65 @@
+@model IEnumerable<EcoManageWeb.Models.MTR>
+@{
+    ViewData["Title"] = "MTRs";
+}
+
+<div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Gestão de MTRs (Manifestos)</h1>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Número MTR</th>
+                        <th>Data Emissão</th>
+                        <th>Gerador (Cliente)</th>
+                        <th>Transportador</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@m.NumeroMtr</td>
+                            <td>@m.EmitidoEm.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@m.Entrada.Contrato.Cliente.RazaoSocial</td>
+                            <td>@m.Entrada.Veiculo.Transportadora.Nome</td>
+                            <td>
+                                @if (m.Status == "Emitido")
+                                {
+                                    <span class="badge bg-warning text-dark"><i class="fa-solid fa-clock"></i> Pendente</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success"><i class="fa-solid fa-check"></i> Assinado</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Pdf" asp-route-id="@m.Id" class="btn btn-sm btn-outline-danger" target="_blank" title="Baixar PDF">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </a>
+                                @if (m.Status == "Emitido" && (User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Analista" || User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Administrador"))
+                                {
+                                    <form asp-action="Assinar" asp-route-id="@m.Id" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success" title="Assinar MTR" onclick="return confirm('Confirmar assinatura deste MTR?');">
+                                            <i class="fa-solid fa-file-signature"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="6" class="text-center">Nenhum MTR encontrado.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

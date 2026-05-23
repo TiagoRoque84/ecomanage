@@ -1,0 +1,85 @@
+@model IEnumerable<EcoManageWeb.Models.Contrato>
+@{
+    ViewData["Title"] = "Contratos de Clientes";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Contratos</h2>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#novoModal">Novo Contrato</button>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Resíduo Autorizado</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.Id</td>
+                        <td>@c.Cliente?.RazaoSocial</td>
+                        <td>@c.Residuo?.Nome (@c.Residuo?.Classe)</td>
+                        <td>@(c.Status)</td>
+                        <td>
+                            <form asp-action="Delete" asp-route-id="@c.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="novoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Vincular Cliente e Resíduo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Cliente</label>
+                        <select name="ClienteId" class="form-control" required>
+                            <option value="">Selecione...</option>
+                            @foreach(var cli in ViewBag.Clientes) {
+                                <option value="@cli.Id">@cli.RazaoSocial - @cli.Cnpj</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Resíduo Autorizado</label>
+                        <select name="ResiduoId" class="form-control" required>
+                            <option value="">Selecione...</option>
+                            @foreach(var res in ViewBag.Residuos) {
+                                <option value="@res.Id">@res.Nome (@res.Classe)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Status</label>
+                        <select name="Status" class="form-control">
+                            <option value="Ativo">Ativo</option>
+                            <option value="Inativo">Inativo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar Contrato</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

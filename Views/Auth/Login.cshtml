@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-white text-center py-4">
+                <h3 class="font-weight-light my-2 text-success"><i class="fa-solid fa-leaf"></i> EcoManage Web</h3>
+                <p class="text-muted small mb-0">Sistema de Gestão de Resíduos (C#)</p>
+            </div>
+            <div class="card-body p-4">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["Error"]</div>
+                }
+                <form method="post" asp-action="Login">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="name@example.com" required>
+                        <label for="email">E-mail</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" name="senha" placeholder="Password" required>
+                        <label for="senha">Senha</label>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">Entrar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-light">
+                <div class="mb-2">
+                    <a href="/PortalCliente/Login" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-building"></i> Acessar Portal do Cliente</a>
+                </div>
+                <div class="small text-muted">Contas de teste Administrativas:</div>
+                <div class="small">admin@eco.com (admin123)</div>
+                <div class="small">balanca@eco.com (admin123)</div>
+            </div>
+        </div>
+    </div>
+</div>

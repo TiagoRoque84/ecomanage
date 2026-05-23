@@ -1,0 +1,84 @@
+@model IEnumerable<EcoManageWeb.Models.FechamentoFatura>
+@{
+    ViewData["Title"] = "Histórico de Faturamentos";
+}
+
+<div class="d-flex justify-content-between pt-3 pb-2 mb-3 border-bottom">
+    <h2>Histórico de Faturas Lançadas</h2>
+    <div>
+        <a asp-action="Novo" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Gerar Novo Fechamento</a>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <form asp-action="LiberarEmLote" method="post">
+            <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Selecione os rascunhos que já conferiu para liberar aos clientes:</span>
+                <button type="submit" class="btn btn-sm btn-success"><i class="fa-solid fa-paper-plane"></i> Liberar Selecionados</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3" style="width: 40px;"></th>
+                            <th>Nº Fatura</th>
+                        <th>Cliente</th>
+                        <th>Período Ref.</th>
+                        <th>Data Lançamento</th>
+                        <th>Valor Total</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model) {
+                        <tr>
+                            <td class="ps-3">
+                                @if (item.Status == "Rascunho")
+                                {
+                                    <input type="checkbox" name="faturasSelecionadas" value="@item.Id" class="form-check-input" />
+                                }
+                            </td>
+                            <td class="fw-bold">#@item.Id.ToString("D4")</td>
+                            <td>@item.Cliente.RazaoSocial</td>
+                            <td>@item.Periodo</td>
+                            <td>@item.DataLancamento.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-success fw-bold">R$ @item.ValorTotal.ToString("N2")</td>
+                            <td>
+                                @if (item.Status == "Rascunho")
+                                {
+                                    <span class="badge bg-secondary"><i class="fa-solid fa-pen-ruler"></i> Rascunho</span>
+                                }
+                                else if (item.Status == "Aberto")
+                                {
+                                    <span class="badge bg-warning text-dark"><i class="fa-regular fa-clock"></i> Aberto</span>
+                                    <div class="small text-muted mt-1">Vence: @item.DataVencimento?.ToString("dd/MM/yyyy")</div>
+                                }
+                                else if (item.Status == "Pago")
+                                {
+                                    <span class="badge bg-success"><i class="fa-solid fa-check"></i> Pago em @item.DataPagamento?.ToString("dd/MM/yyyy")</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@item.Status</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="/Faturamento/BaixarExcel?id=@item.Id" class="btn btn-sm btn-outline-primary" target="_blank" title="Baixar Excel">
+                                    <i class="fa-solid fa-file-excel"></i> Excel
+                                </a>
+                                @if (item.Status == "Aberto")
+                                {
+                                    <button type="submit" formaction="@Url.Action("MarcarPago", "Faturamento", new { id = item.Id })" formmethod="post" class="btn btn-sm btn-outline-success" onclick="return confirm('Confirmar o recebimento desta fatura?');"><i class="fa-solid fa-check-circle"></i> Dar Baixa (Pago)</button>
+                                }
+                                <button type="submit" formaction="@Url.Action("Excluir", "Faturamento", new { id = item.Id })" formmethod="post" class="btn btn-sm btn-outline-danger" onclick="return confirm('Isso excluirá a fatura e disponibilizará as pesagens novamente. Tem certeza?');"><i class="fa-solid fa-trash"></i> Desfazer</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        </form>
+    </div>
+</div>
