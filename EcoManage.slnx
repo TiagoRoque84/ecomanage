@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EcoManageWeb.csproj" />
+  <Project Path="EcoManageWeb.Tests/EcoManageWeb.Tests.csproj" />
+</Solution>
