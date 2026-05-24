@@ -45,6 +45,11 @@ Para fazer login no sistema, utilize as seguintes credenciais padrão que foram 
 - **E-mail:** `balanca@eco.com`
 - **Senha:** `admin123`
 
+**Acesso ao Portal do Cliente (Gestores Municipais):**
+Para testar a visão isolada do cliente com o Dashboard e download de faturas, acesse o link "Área do Cliente" no menu ou acesse a rota `/PortalCliente/Login`.
+- **CNPJ para teste:** `12.345.678/0001-90` (Prefeitura de Mococa)
+- **CNPJ para teste:** `45.678.901/0001-23` (Indústria Alfa)
+
 ---
 
 ## 📱 Acesso via Celular / Rede Local
